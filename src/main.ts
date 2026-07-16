@@ -1,18 +1,22 @@
-import pool from './Database/connection';
+import { AutorController } from './Controllers/AutorController';
 
 async function main() {
-    console.log('Iniciando BookStore Manager CLI...');
+    // Instancia o controller ed comunicação com o Service
+    const controller = new AutorController();
+
+    console.log("--- Iniciando teste de cadastro de Autor ---");
+
+    // Teste 1: Tentar cadastrar um autor válido
+    await controller.cadastrarAutor("Machado de Assis", "Brasileira");
+
+    // Teste 2: Tentar cadastrar um autor inválido (nome vazio) para testar o tratamento de erro
+    await controller.cadastrarAutor("", "Desconhecida");
+
+    console.log("\n--- Listagem de Autores no Banco ---");
     
-    try {
-        // Faz consulta simples para testar comunicação
-        const res = await pool.query('SELECT NOW()');
-        console.log('✅ Banco conectado com sucesso! Data do servidor:', res.rows[0].now);
-    } catch (error) {
-        console.error('❌ Erro ao conectar no banco de dados:', error);
-    } finally {
-        
-        await pool.end();
-    }
+    // Lista os autores para verificar o resultado
+    await controller.listarAutores();
 }
 
-main();
+// Executa a função principal
+main().catch(err => console.error("Erro fatal no sistema:", err));
