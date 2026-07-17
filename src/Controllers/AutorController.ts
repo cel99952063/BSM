@@ -41,4 +41,31 @@ export class AutorController {
             console.error(`❌ Erro ao listar autores: ${error.message}`);
         }
     }
+    // U - Update
+    async atualizarAutor(id: number, nome: string, nacionalidade: string): Promise<void> {
+        try {
+            const autor = await this.autorService.atualizar(id, nome, nacionalidade);
+            if (autor) {
+                console.log(`✅ Autor ${id} atualizado com sucesso para: ${autor.nome}`);
+            } else {
+                console.log(`⚠️ Autor com ID ${id} não encontrado para atualização.`);
+            }
+        } catch (error: any) {
+            console.error(`❌ Erro ao atualizar autor: ${error.message}`);
+        }
+    }
+
+    // D - Delete
+    async removerAutor(id: number): Promise<void> {
+        try {
+            const sucesso = await this.autorService.deletar(id);
+            if (sucesso) {
+                console.log(`✅ Autor ${id} removido com sucesso.`);
+            } else {
+                console.log(`⚠️ Autor com ID ${id} não encontrado para remoção.`);
+            }
+        } catch (error: any) {
+            console.error(`❌ Erro ao remover autor: ${error.message}`);
+        }
+    }
 }
