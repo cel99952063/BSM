@@ -1,34 +1,29 @@
-import { AutorController } from './Controllers/AutorController';
+import { LivroController } from './Controllers/LivroController';
 
 async function main() {
-    const controller = new AutorController();
+    const livroController = new LivroController();
 
-    console.log("--- Iniciando testes do CRUD de Autores ---");
+    console.log("--- Iniciando testes do CRUD de Livros ---");
 
-    // 1. CREATE
-    console.log("\n[1] Cadastrando novo autor...");
-    await controller.cadastrarAutor("Clarice Lispector", "Brasileira");
+    // 1. CREATE: Cadastrando um livro (Certifique-se de que o autor_id 2 exista no banco)
+    console.log("\n[1] Cadastrando novo livro...");
+    await livroController.cadastrarLivro("Dom Casmurro", 1899, 2);
 
-    // 2. READ
-    console.log("\n[2] Listando autores após cadastro:");
-    await controller.listarAutores();
+    // 2. READ: Listando livros
+    console.log("\n[2] Listagem de livros:");
+    await livroController.listarLivros();
 
-    // 3. UPDATE (Vamos supor que o ID 1 seja o Machado de Assis do teste anterior, ou a Clarice seja o ID 2)
-    // Ajuste o ID abaixo caso seu banco esteja com IDs diferentes
-    console.log("\n[3] Atualizando autor de ID 1...");
-    await controller.atualizarAutor(1, "Machado de Assis (Atualizado)", "Brasileiro");
+    // 3. UPDATE: Atualizando o título do livro
+    console.log("\n[3] Atualizando livro de ID 1...");
+    await livroController.atualizarLivro(1, "Dom Casmurro (Edição Comemorativa)", 1899, 2);
 
-    // 4. READ Novamente para ver a atualização
-    console.log("\n[4] Listando autores após atualização:");
-    await controller.listarAutores();
+    // 4. DELETE: Removendo o livro
+    console.log("\n[4] Removendo livro de ID 1...");
+    await livroController.removerLivro(1);
 
-    // 5. DELETE
-    console.log("\n[5] Removendo autor de ID 1...");
-    await controller.removerAutor(1);
-
-    // 6. READ Final para confirmar a exclusão
-    console.log("\n[6] Listagem final de autores:");
-    await controller.listarAutores();
+    // 5. READ FINAL: Conferindo a lista
+    console.log("\n[5] Listagem final:");
+    await livroController.listarLivros();
 }
 
 main().catch(err => console.error("Erro fatal no sistema:", err));
