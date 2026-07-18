@@ -55,8 +55,18 @@ export class LivroRepository {
         const result = await pool.query(query, values);
         return result.rows[0] || null;
     }
-
-    // D - Delete
+    
+    // U - Atualizar APENAS a QTDE disponível
+    
+    async atualizarQuantidade(id: number, quantidade: number): Promise<void> {
+        const query = `
+            UPDATE livros 
+            SET quantidade_disponivel = $1 
+            WHERE id = $2
+        `;
+        await pool.query(query, [quantidade, id]);
+    }
+    // D - Deelte
     async deletar(id: number): Promise<boolean> {
         const query = 'DELETE FROM livros WHERE id = $1';
         const result = await pool.query(query, [id]);
