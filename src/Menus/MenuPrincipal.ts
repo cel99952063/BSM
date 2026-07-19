@@ -5,7 +5,7 @@ import { AutorController } from '../Controllers/AutorController';
 import { LivroController } from '../Controllers/LivroController';
 import { ClienteController } from '../Controllers/ClienteController';
 import { EmprestimoController } from '../Controllers/EmprestimoController';
-// import { RelatorioController } from '../Controllers/RelatorioController'; // TEM QUE CRIAR !!!
+import { RelatorioController } from '../Controllers/RelatorioController';
 
 export class MenuPrincipal {
     
@@ -13,6 +13,7 @@ export class MenuPrincipal {
     private livroController = new LivroController();
     private clienteController = new ClienteController();
     private emprestimoController = new EmprestimoController();
+    private relatorioController = new RelatorioController();
 
     // Transforma em async para os submenus chamar banco
     async exibir(): Promise<void> {
@@ -45,7 +46,7 @@ export class MenuPrincipal {
                     await this.emprestimoController.exibirMenu();
                     break;
                 case '5':
-                    console.log("\n TEM QUE FAZER!!!...");
+                    await this.relatorioController.exibirMenu();
                     break;
                 case '0':
                     console.log("\nEncerrando a aplicação. Até logo!");
