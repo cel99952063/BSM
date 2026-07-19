@@ -1,31 +1,25 @@
+import pool from './Database/connection';
+import { MenuPrincipal } from './Menus/MenuPrincipal';
 
-import { ClienteController } from './Controllers/ClienteController';
-import { LivroController } from './Controllers/LivroController';
-import { EmprestimoController } from './Controllers/EmprestimoController';
 
 async function main() {
-    const clienteController = new ClienteController();
-    const livroController = new LivroController();
-    const emprestimoController = new EmprestimoController();
+    console.log("--- BSM (BookStore Manager) ---");
+    console.log("🔄 Verificando conexão com o banco de dados...");
 
-    console.log("--- Testando Fluxo de Empréstimos ---");
+    try {
+        // Teste de conexão
+        await pool.query('SELECT NOW()');
+        console.log("✅ Conexão com PostgreSQL estabelecida com sucesso!");
 
-    // 2. Empresta
-    console.log("\nTentando realizar empréstimo (Livro ID 2, Cliente ID 2):");
-    await emprestimoController.realizarEmprestimo(2, 2);
+        // Inicia Menu Principal
+        const menu = new MenuPrincipal();
+        await menu.exibir();
 
-    // 3. Listar para ver o JOIN
-    console.log("\nListagem de Empréstimos:");
-    await emprestimoController.listarEmprestimos();
-
-    // 4. Tenta emprestar o mesmo livro 
-    
-    console.log("\nTeste de validação (RF13):");
-    await emprestimoController.realizarEmprestimo(2, 2);
-
-    // 5. Registrar Devolução
-    console.log("\nRegistrando devolução (Empréstimo ID 1):");
-    await emprestimoController.registrarDevolucao(3, 2);
+    } catch (error) {
+        console.error("❌ Erro fatal: Não foi possível conectar ao banco de dados.");
+        console.error("Certifique-se de que o PostgreSQL está rodando e as credenciais no .env estão corretas.");
+        process.exit(1);
+    }
 }
 
 main();
