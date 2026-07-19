@@ -1,3 +1,4 @@
+import * as readline from 'readline-sync';
 import { ClienteService } from '../Services/ClienteService';
 
 /**
@@ -6,6 +7,50 @@ import { ClienteService } from '../Services/ClienteService';
  */
 export class ClienteController {
     private clienteService = new ClienteService();
+
+    async exibirMenu(): Promise<void> {
+        let voltar = false;
+        while (!voltar) {
+            console.log("\n====== Menu de Clientes ======");
+            console.log("1. Listar Clientes");
+            console.log("2. Cadastrar Cliente");
+            console.log("3. Atualizar Cliente");
+            console.log("4. Remover Cliente");
+            console.log("5. Voltar");
+            
+            const opcao = readline.question("Escolha uma opcao: ");
+
+            switch (opcao) {
+                case '1':
+                    await this.listarClientes();
+                    break;
+                case '2':
+                    const nome = readline.question("Nome: ");
+                    const email = readline.question("E-mail: ");
+                    const cpf = readline.question("CPF: ");
+                    const tel = readline.question("Telefone (opcional): ");
+                    await this.cadastrarCliente(nome, email, cpf, tel || undefined);
+                    break;
+                case '3':
+                    const idUp = parseInt(readline.question("ID do cliente para atualizar: "));
+                    const nomeUp = readline.question("Novo nome: ");
+                    const emailUp = readline.question("Novo e-mail: ");
+                    const cpfUp = readline.question("Novo CPF: ");
+                    const telUp = readline.question("Novo telefone (opcional): ");
+                    await this.atualizarCliente(idUp, nomeUp, emailUp, cpfUp, telUp || undefined);
+                    break;
+                case '4':
+                    const idDel = parseInt(readline.question("ID do cliente para remover: "));
+                    await this.removerCliente(idDel);
+                    break;
+                case '5':
+                    voltar = true;
+                    break;
+                default:
+                    console.log("❌ Opção inválida!");
+            }
+        }
+    }
 
     async cadastrarCliente(nome: string, email: string, cpf: string, telefone?: string): Promise<void> {
         try {

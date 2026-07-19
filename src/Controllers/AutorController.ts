@@ -1,3 +1,4 @@
+import * as readline from 'readline-sync';
 import { AutorService } from '../Services/AutorService';
 
 /**
@@ -12,35 +13,70 @@ export class AutorController {
         this.autorService = new AutorService();
     }
 
+    async exibirMenu(): Promise<void> {
+        let voltar = false;
+        while (!voltar) {
+            console.log("\n====== Menu de Autores ======");
+            console.log("1. Listar Autores");
+            console.log("2. Cadastrar Autor");
+            console.log("3. Atualizar Autor");
+            console.log("4. Remover Autor");
+            console.log("5. Voltar");
+            
+            const opcao = readline.question("Escolha uma opcao: ");
+
+            switch (opcao) {
+                case '1':
+                    await this.listarAutores();
+                    break;
+                case '2':
+                    const nome = readline.question("Nome do autor: ");
+                    const nacionalidade = readline.question("Nacionalidade: ");
+                    await this.cadastrarAutor(nome, nacionalidade);
+                    break;
+                case '3':
+                    const idUp = parseInt(readline.question("ID do autor para atualizar: "));
+                    const nomeUp = readline.question("Novo nome: ");
+                    const nacUp = readline.question("Nova nacionalidade: ");
+                    await this.atualizarAutor(idUp, nomeUp, nacUp);
+                    break;
+                case '4':
+                    const idDel = parseInt(readline.question("ID do autor para remover: "));
+                    await this.removerAutor(idDel);
+                    break;
+                case '5':
+                    voltar = true;
+                    break;
+                default:
+                    console.log("❌ Opção inválida!");
+            }
+        }
+    }
+
     /**
      * Gerencia a chamada para cadastrar um novo autor.
-     * Captura possíveis erros de validação vindos do Service.
      */
     async cadastrarAutor(nome: string, nacionalidade: string): Promise<void> {
         try {
-            // Chama o service para processar a criação
             const autor = await this.autorService.criar(nome, nacionalidade);
             console.log(`✅ Autor cadastrado com sucesso! ID: ${autor.id} - ${autor.nome}`);
         } catch (error: any) {
-            // Caso o service lance um erro (ex: nome vazio), capturamos aqui para exibir
-            // ao usuário de forma amigável em vez de interromper o programa.
             console.error(`❌ Erro ao cadastrar autor: ${error.message}`);
         }
     }
 
     /**
-     * Busca todos os registros e exibe de forma formatada no terminal.
+     * Busca todos os registros, formata e exibe.
      */
     async listarAutores(): Promise<void> {
         try {
             const autores = await this.autorService.listarTodos();
-            
-            // console.table para grade visual
             console.table(autores);
         } catch (error: any) {
             console.error(`❌ Erro ao listar autores: ${error.message}`);
         }
     }
+
     // U - Update
     async atualizarAutor(id: number, nome: string, nacionalidade: string): Promise<void> {
         try {

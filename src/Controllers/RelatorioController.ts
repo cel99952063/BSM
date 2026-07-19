@@ -1,7 +1,9 @@
 import * as readline from 'readline-sync';
+import { RelatorioService } from '../Services/RelatorioService'; 
 
 export class RelatorioController {
-    
+    private relatorioService = new RelatorioService(); 
+
     async exibirMenu(): Promise<void> {
         console.log("\n====== Módulo de Relatórios ======");
         console.log("1. Livros Disponíveis vs. Emprestados");
@@ -14,7 +16,7 @@ export class RelatorioController {
                 await this.gerarRelatorioLivros();
                 break;
             case '2':
-                return; // Volta para o MenuPrincipal
+                return;
             default:
                 console.log("❌ Opção inválida!");
         }
@@ -22,7 +24,17 @@ export class RelatorioController {
 
     private async gerarRelatorioLivros(): Promise<void> {
         console.log("\n🔄 Consultando dados no banco...");
-        // Aqui depois eu colco pra chmar RelatorioService 
-        console.log("✅ (Relatório de livros gerado com sucesso)");
+        try {
+            
+            const dados = await this.relatorioService.listarLivrosEmprestadosAtualmente();
+            
+            if (dados.length === 0) {
+                console.log("✅ Não há livros emprestados no momento.");
+            } else {
+                console.table(dados); // tabelinha marota
+            }
+        } catch (error) {
+            console.error("Erro ao gerar relatório:", error);
+        }
     }
 }
