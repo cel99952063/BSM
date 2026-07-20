@@ -50,7 +50,17 @@ export class EmprestimoController {
     async listarEmprestimos(): Promise<void> {
         try {
             const lista = await this.emprestimoService.listar();
-            console.table(lista);
+           const listaFormatada = lista.map(emp => ({
+                ...emp, // Mantém todos os campos originais (id, livro, usuario, etc.)
+                data_emprestimo: emp.data_emprestimo 
+                    ? new Date(emp.data_emprestimo).toLocaleDateString('pt-BR') 
+                    : 'N/A',
+                data_devolucao: emp.data_devolucao 
+                    ? new Date(emp.data_devolucao).toLocaleDateString('pt-BR') 
+                    : "Pendente"
+            }));
+
+            console.table(listaFormatada);
         } catch (error: any) {
             console.error(`❌ Erro ao listar empréstimos: ${error.message}`);
         }

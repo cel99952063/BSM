@@ -14,9 +14,10 @@ export class LivroController {
             console.log("\n====== Menu de Livros ======");
             console.log("1. Listar Livros");
             console.log("2. Cadastrar Livro");
-            console.log("3. Atualizar Livro");
-            console.log("4. Remover Livro");
-            console.log("5. Voltar");
+            console.log("3. Atualizar Livro (Completo)");
+            console.log("4. Atualizar Estoque (Apenas Quantidade)");
+            console.log("5. Remover Livro");
+            console.log("6. Voltar");
             
             const opcao = readline.question("Escolha uma opcao: ");
 
@@ -28,20 +29,27 @@ export class LivroController {
                     const titulo = readline.question("Título do livro: ");
                     const ano = parseInt(readline.question("Ano de publicação: "));
                     const autorId = parseInt(readline.question("ID do autor: "));
-                    await this.cadastrarLivro(titulo, ano, autorId);
+                    const qtd = parseInt(readline.question("Quantidade disponível: "));
+                    await this.cadastrarLivro(titulo, ano, autorId, qtd);
                     break;
                 case '3':
                     const idUp = parseInt(readline.question("ID do livro para atualizar: "));
                     const tituloUp = readline.question("Novo título: ");
                     const anoUp = parseInt(readline.question("Novo ano: "));
                     const autorIdUp = parseInt(readline.question("Novo ID do autor: "));
-                    await this.atualizarLivro(idUp, tituloUp, anoUp, autorIdUp);
+                    const qtdUp = parseInt(readline.question("Nova quantidade: "));
+                    await this.atualizarLivro(idUp, tituloUp, anoUp, autorIdUp, qtdUp);
                     break;
                 case '4':
+                    const idQtd = parseInt(readline.question("ID do livro para atualizar o estoque: "));
+                    const novaQtd = parseInt(readline.question("Nova quantidade disponível: "));
+                    await this.atualizarQuantidadeLivro(idQtd, novaQtd);
+                    break;
+                case '5':
                     const idDel = parseInt(readline.question("ID do livro para remover: "));
                     await this.removerLivro(idDel);
                     break;
-                case '5':
+                case '6':
                     voltar = true;
                     break;
                 default:
@@ -50,9 +58,9 @@ export class LivroController {
         }
     }
 
-    async cadastrarLivro(titulo: string, ano_publicacao: number, autor_id: number): Promise<void> {
+    async cadastrarLivro(titulo: string, ano_publicacao: number, autor_id: number, quantidade_disponivel: number): Promise<void> {
         try {
-            const livro = await this.livroService.criar(titulo, ano_publicacao, autor_id);
+            const livro = await this.livroService.criar(titulo, ano_publicacao, autor_id, quantidade_disponivel);
             console.log(`✅ Livro cadastrado com sucesso! ID: ${livro.id} - ${livro.titulo}`);
         } catch (error: any) {
             console.error(`❌ Erro ao cadastrar livro: ${error.message}`);
@@ -68,9 +76,9 @@ export class LivroController {
         }
     }
 
-    async atualizarLivro(id: number, titulo: string, ano_publicacao: number, autor_id: number): Promise<void> {
+    async atualizarLivro(id: number, titulo: string, ano_publicacao: number, autor_id: number, quantidade_disponivel: number): Promise<void> {
         try {
-            const livro = await this.livroService.atualizar(id, titulo, ano_publicacao, autor_id);
+            const livro = await this.livroService.atualizar(id, titulo, ano_publicacao, autor_id, quantidade_disponivel);
             if (livro) {
                 console.log(`✅ Livro ${id} atualizado com sucesso para: ${livro.titulo}`);
             } else {
@@ -78,6 +86,15 @@ export class LivroController {
             }
         } catch (error: any) {
             console.error(`❌ Erro ao atualizar livro: ${error.message}`);
+        }
+    }
+
+    async atualizarQuantidadeLivro(id: number, quantidade_disponivel: number): Promise<void> {
+        try {
+            await this.livroService.atualizarQuantidade(id, quantidade_disponivel);
+            console.log(`✅ Estoque do livro ID ${id} atualizado com sucesso para: ${quantidade_disponivel}`);
+        } catch (error: any) {
+            console.error(`❌ Erro ao atualizar estoque: ${error.message}`);
         }
     }
 
